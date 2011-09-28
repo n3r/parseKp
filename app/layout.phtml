@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <title></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+    <?php echo $this->headMeta(); ?>
+    <?php echo $this->headLink(); ?>
+    <?php echo $this->headScript(); ?>
+</head>
+<body>
+
+<div id="wrapper">
+
+    <header id="header">
+        <strong>parseKP - Kinopoisk Parser</strong>
+    </header><!-- #header-->
+
+    <div id="content">
+        <?php echo $this->layout()->content?>
+    </div><!-- #content-->
+
+    <footer id="footer"></footer><!-- #footer -->
+
+</div><!-- #wrapper -->
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<?php echo $this->headTitle(); ?>
+<link rel="shortcut icon" href="/images/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<?php echo $this->headMeta(); ?>
+<link rel="stylesheet" type="text/css" href="/css/main.css" />
+<?php echo $this->headLink(); ?>
+<script type="text/javascript" src="/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/ZeroClipboard.js"></script>
+<?php echo $this->headScript(); ?>
+</head>
+
+<body>
+
+<script type="text/javascript">
+function shorten_result(options) {	
+    // load box	
+    $("#sh_res").ajaxBox({
+        url: "/index/shortenresult",   
+        request: {  
+    	format: "shorten",
+    	filter: $("#form_url").val(),   
+    	}     
+    });
+     
+}
+
+var url_to_redirect = '';
+
+$(function(){
+
+$('.newlinkbutton').click(function(){
+    $('.shortening-form').toggle('fast');
+	return false;
+});
+
+$('#form_url').focus(function(){
+    $(this).removeClass('faded');
+	if ($(this).val()=='Paste your link here') {$(this).val('');};
+});
+
+$('#form_url').blur(function(){
+	if ($(this).val()=='') {
+	    $(this).val('Paste your link here');
+		$(this).addClass('faded');
+		};
+});
+
+$("#shorten").live('click',function(){
+	//alert($("#form_url").val());	
+	shorten_result();
+	$('.sh_res').show();	
+	//return false;	   	 
+});  
+
+});
+</script>
+
+<div id="alert_message" class="hidden" align="center"></div>  
+<div id="opaco" class="hidden"></div> 
+<div id="popup" class="hidden"></div> 
+<div id="loading" class="loading" style="display: none;"><img src="/images/loading.gif" width='100' height='100' alt='Loading...' /></div>
+
+ 	<?php if(!$this->user()->isLoggedIn()) { ?>  
+	<div class="loginform popup" style="display: none;">
+	<div class="popup-top"></div>
+	<div class="popup-body">
+	<h1 class="popup-title">Sign In</h1>
+	<a href="#" class="popup-close" title="Close">Close</a>
+	<div class="clear"></div>
+	<?php 
+	$errors = $this->formErrorsWrapper($this->formLogin); 
+	echo $errors->printErrors(); ?>	
+	<div class="facebook-login"><a href="/facebook/login" class="facebook-link"><span class="icon icon-facebook">&nbsp;</span> <span class="label">Sign in via Facebook</a></span></div>
+	
+	 <form id="formLogin" method="post" action="/">
+	 	  <input type="hidden" name="back" value="<?php echo $this->user()->getRequestBackUrl(); ?>" />
+		  
+	  	  <div class="form-row <?php //echo $errors->highlight('form_login_username'); ?>">
+		  <div class="form-label">Username:</div>
+	  	  <div class="form-value"><?php echo $this->formLogin->getElement('form_login_username')->setAttrib("class", "text"); ?></div>
+	  	  </div>
+
+	  	  <div class="form-row">
+		  <div class="form-label">Password:<a class="forgotpass" href="/account/reset<?php if (!empty($_SERVER['QUERY_STRING'])) echo '?' . $_SERVER['QUERY_STRING']; ?>">I forgot my password</a></div>
+		  <div class="form-value"><?php echo $this->formLogin->getElement('form_login_password')->setAttrib("class", "text pass"); ?></div>
+		  </div>
+		  <div class="remember"><?php echo $this->formLogin->getElement('form_login_rememberme')->setAttrib('class', 'checkbox');?><label for="form_login_rememberme">Remember me on this computer</label></div>
+	 	  <div class="form-buttons">
+		  <input type='submit' class="button ajax_submit" value="Sign In" title="Sign in" alt="Sign in"/>
+		  </div>
+		  
+	</form>
+	
+	<div class="signup">Do not have an account? <a href="/account/signup">Sign up here</a></div>
+	
+	<div class="clear"></div>
+	</div>
+	
+	<div class="popup-bottom"></div>
+	 </div>  
+	<?php } ?>
+
+<div class="site">
+
+<div class="header">
+<div class="header-links">
+ 	<?php if($this->user()->isLoggedIn()) { ?>  	 
+ 	 <div class="operating">	    	
+  	  <div class="username">
+	  <b><?php echo $this->user()->getThumbnail() ?><?php echo $this->user()->getUsername() ?></b>
+  	  <a href="/users/view/id/<?php echo $this->user()->getId()?>">My profile</a>  	  
+	  <a href="/account/logout">Logout</a>
+	  </div>
+ 	</div>
+ 	<?php } else { ?>
+	<a href="#" class="loginlink">Log In</a>
+	<a href="/account/signup" >Sign Up</a>
+ <?php }?>
+</div>
+<a href="/" class="logo-link">
+<h1 class="logo">7kb.org</h1>
+<div class="tagline">Links shortening and more</div>
+</a>
+ <?php if (!$this->homepage) { ?><a href="#" class="newlinkbutton"><span class="icon icon-link-white">&nbsp;</span> New Short Link</a><?php } ?>
+</div>
+
+<div id="d_clip_button" >Copy To Clipboard</div>
+ <script type="text/javascript">
+ZeroClipboard.setMoviePath( '/js/ZeroClipboard.swf' );
+var clip = new ZeroClipboard.Client();
+clip.glue( 'd_clip_button' );
+$('#d_clip_button').hide();
+</script>
+
+<?php if (!$this->homepage) { ?>
+<div class="shortening-form hidden">
+<div class="box shortening-box">
+<div class="shortening-url-label">Your Link:</div>
+<form name="form_add" id="form_add" action="" method="post">
+<input type="text" class="text faded" value="Paste your link here" id="form_url" name="form_url" />
+<input class="button" id="shorten" type="button" value="Shorten" />
+</form>
+</div>
+
+<div class="sh_res hidden"><div id="sh_res"></div></div>
+</div> 
+<?php } ?>
+
+<div class="page">
+
+</div>
+</div>
+
+<div class="footer">
+<span class="footer-links"><a href="#">About 7kb.org</a><a href="#">Terms of Use</a></span>
+<span class="footer-copy">Copyright 2011, 7kb.org</span>
+<div class="clear"></div>
+</div>
+
+</body>
+</html>

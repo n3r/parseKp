@@ -1,0 +1,8 @@
+README
+======
+Parser for kinopoisk - based on Zend Framework(v1.11).
+
+@see http://kinopoisk.ru/
+
+v0.1 - now in progress
+ability of getting film's title(and basic params) by film's id.
