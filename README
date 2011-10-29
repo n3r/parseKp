@@ -4,11 +4,7 @@ Parser for kinopoisk - based on Zend Framework(v1.11).
 
 @see http://kinopoisk.ru/
 
-v0.1 
-ability of getting film's information by kp_id:
-now works follow params:
- name
- alternativeHeadline
- description
- premierDate
- avatars
+how it works: 
+site.com/get/film/%kinopoisk_id%
+
+

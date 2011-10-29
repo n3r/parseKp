@@ -8,7 +8,9 @@ class Kp_Service_Kinopoisk_Client extends Zend_Http_Client
     function __construct($username = null, $password = null)
     {
         parent::__construct();
-        
+
+        //@todo: use login/pass for kinopoisk
+
         //magic headers for kinopoisk
         $this->setHeaders("Host", "www.kinopoisk.ru:80");
         $this->setHeaders("Accept", "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg");
@@ -34,10 +36,19 @@ class Kp_Service_Kinopoisk_Client extends Zend_Http_Client
         }
     }
 
+    /**
+     * 
+     */
     protected function clearHtml($html)
     {
         $html = iconv('cp1251', 'utf-8', $html);
-        $html = str_replace(array('&nbsp;', '\n', '<br />', '<br>'), ' ', $html);
+
+        $search = array('&nbsp;', '<br />', '<br>', '  ', "\r");
+        if(!Kp_Service_Kinopoisk::IS_DEVELOPMENT){
+            $search += array("\n");
+        }
+
+        $html = str_replace($search, ' ', $html);
         //todo: clean scripts, styles, comments.
 
         return $html;
